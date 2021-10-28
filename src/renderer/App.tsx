@@ -17,7 +17,26 @@ import Typography from '@mui/material/Typography';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import {codeFormatter} from '../util/func'
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
+
+const Selection = ({label,name,onChange,value,options}) => {
+  return <FormControl variant="filled" fullWidth>
+  <InputLabel >{label}</InputLabel>
+  <Select
+    name={name}    
+    value={value}
+    onChange={onChange}
+  >
+    {
+      options.map((option,idx) => <MenuItem key={idx} value={option.value || option}>{option.label || option}</MenuItem>)
+    }        
+  </Select>
+</FormControl>
+}
 
 const Link = ({children}) => {
   return <span onClick={()=>{shell.openExternal(children)}}
@@ -124,9 +143,18 @@ const Main = () => {
             {name:'font',label:'Label Font'},
             {name:'label',label:'Label Text'},
             {name:'paperSize',label:'Paper Size'},
-
+            {name:'type',label:'Barcode Type',options:[{value:'datamatrix',label:'Data Matrix'},{value:'qrcode',label:'QR Code'}]}
           ].map(i=>(<Grid key={i.name} item xs={4}>
-            <TextField 
+            {
+              i.options ? 
+              <Selection
+              label={i.label}
+              value={para[i.name] || ''}
+              onChange={handleChange}
+              name={i.name}   
+              options={i.options}
+              />
+              :<TextField 
               label={i.label}
               value={para[i.name] || ''}
               onChange={handleChange}
@@ -134,6 +162,7 @@ const Main = () => {
               variant='filled'
               fullWidth 
              />
+            }
           </Grid>))
         }              
         

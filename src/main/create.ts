@@ -3,12 +3,17 @@ import electron from 'electron'
 import path from 'path'
 import {codeFormatter} from '../util/func'
 const PDFDocument = require('./pdfkit.standalone');
-
+import DATAMatrix from './datamatrix';
+const SVGtoPDF = require('svg-to-pdfkit');
 import fs from 'fs';
 import qrcode from 'qrcode';
 
 import { dialog } from 'electron';
 import dayjs from 'dayjs';
+
+PDFDocument.prototype.addSVG = function (svg, x, y, options) {
+    return SVGtoPDF(this, svg, x, y, options), this;
+};
 
 const DEFAULT = {
     code: 'YYMMDD-****-[001]',
@@ -26,7 +31,8 @@ const DEFAULT = {
     ls:6,
     font: 'Helvetica',
     label: '730-00008 RevA',
-    paperSize:'A4'
+    paperSize:'A4',
+    type:'qrcode'
 }
 
 function getConfigFromFile (file){
@@ -129,6 +135,7 @@ export async function makePDF(filePath,para) {
     const ls = parseInt(para.ls)    // Label size, 0 - 9
     const font = para.font || 'Helvetica' // font name
     const label = para.label || ''
+    const type = para.type || 'qrcode'
     
 
     const gridSizeX = (pw-ml-mr) / gx
@@ -162,8 +169,13 @@ export async function makePDF(filePath,para) {
              y = mt + j * gridSizeY
              const id = codeFormatter(code, j*gx + i)
              barcodes.push(id)
-            const qr = await qrcode.toDataURL(id,{margin:0,scale:12});
-            pdf.image(qr,x+gridSizeX*qx,y+gridSizeY*qy,{width:qrSize})
+                if (type === 'qrcode'){
+                    const qr = await qrcode.toDataURL(id,{margin:0,scale:12});
+                    pdf.image(qr,x+gridSizeX*qx,y+gridSizeY*qy,{width:qrSize})
+                } else if (type === 'datamatrix'){ 
+                    const svgText = DATAMatrix({msg:id,dim:qrSize,pad:0,rct:0})
+                    pdf.addSVG(svgText,x+gridSizeX*qx,y+gridSizeY*qy,{assumePt:true})
+                }             
             pdf.text(label || id,x+gridSizeX*lx,y+gridSizeY*ly)
         }
     }
