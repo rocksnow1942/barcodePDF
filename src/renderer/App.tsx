@@ -118,7 +118,7 @@ const Main = () => {
       <Button onClick={()=>setShowHelp(!showHelp)} 
       startIcon={<HelpOutlineOutlinedIcon/>}      
       sx={{position:'absolute', top:'1em',right:'1em'}}
-      >{showHelp?'Hide userData Help':'Show User Help'}</Button>
+      >{showHelp?'Hide Help':'Show Help'}</Button>
       {
         showHelp && <UserHelp/>
       }
