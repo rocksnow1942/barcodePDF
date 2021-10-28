@@ -95,7 +95,7 @@ const Main = () => {
   return (
     <Box sx={{m:'1em'}}>
       <Box sx={{p:'0em 1em 1em'}}>
-      <Typography sx={{mt:'1.2em'}}><b>Barcode Generator</b></Typography> 
+      <Typography sx={{mt:'1.2em'}}><b>BaBaCoder</b></Typography> 
       <Button onClick={()=>setShowHelp(!showHelp)} 
       startIcon={<HelpOutlineOutlinedIcon/>}      
       sx={{position:'absolute', top:'1em',right:'1em'}}

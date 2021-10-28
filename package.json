@@ -1,6 +1,6 @@
 {
   "name": "barcode-gen",
-  "productName": "Barcode Generator",
+  "productName": "BaBaCoder",
   "description": "Generate Barcode for print on a PDF",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -30,7 +30,7 @@
     ]
   },
   "build": {
-    "productName": "Barcode Generator",
+    "productName": "BaBaCoder",
     "appId": "hui.Barcode.Generator",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
@@ -98,38 +98,16 @@
     "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
-  },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    },
-    {
-      "name": "John Tran",
-      "email": "jptran318@gmail.com",
-      "url": "https://github.com/jooohhn"
-    }
-  ],
+    "name": "Hui Kang",
+    "email": "hui.kang@aptitudemedical.com",
+    "url": "https://h-kang.com"
+  }, 
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
-  },
+ 
   "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "electron"    
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "",
   "jest": {
     "testURL": "http://localhost/",
     "testEnvironment": "jsdom",

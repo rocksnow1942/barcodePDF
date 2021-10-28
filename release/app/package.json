@@ -1,13 +1,13 @@
 {
     "name": "qrcode-generator",
-    "productName": "QRCode Generator",
+    "productName": "BaBaCoder",
     "version": "0.0.1",
     "description": "For making qrcodes",
     "main": "./dist/main/main.js",
     "author": {
-      "name": "Electron React Boilerplate Maintainers",
-      "email": "electronreactboilerplate@gmail.com",
-      "url": "https://github.com/electron-react-boilerplate"
+      "name": "Hui Kang",
+      "email": "hui.kang@aptitudemedical.com",
+      "url": "https://github.com/rocksnow1942/barcodePDF"
     },
     "scripts": {
       "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
