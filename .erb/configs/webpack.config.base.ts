@@ -18,6 +18,10 @@ export default {
         exclude: /node_modules/,
         use: {
           loader: 'ts-loader',
+          options: {            
+            // use this so that no longer complains about erros in typescript
+            transpileOnly: true,
+          }
         },        
       },
     ],

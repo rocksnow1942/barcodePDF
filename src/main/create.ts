@@ -11,7 +11,7 @@ import { dialog } from 'electron';
 import dayjs from 'dayjs';
 
 const DEFAULT = {
-    code: 'XXXXXXMMDDYYLT1',
+    code: 'YYMMDD-****-[001]',
     mt: 15,
     mr: 15,
     ml: 15,
@@ -155,17 +155,21 @@ export async function makePDF(filePath,para) {
     pdf.fontSize(ls)
     pdf.font(font)
     let x,y;
-    for (let i=0; i<gx; i++){
-        for (let j=0; j<gy; j++){
+    const barcodes = []
+    for (let j=0; j<gy; j++){
+        for (let i=0; i<gx; i++){
              x = ml + i * gridSizeX
              y = mt + j * gridSizeY
-            const qr = await qrcode.toDataURL(codeFormatter(code),{margin:0});
+             const id = codeFormatter(code, j*gx + i)
+             barcodes.push(id)
+            const qr = await qrcode.toDataURL(id,{margin:0,scale:12});
             pdf.image(qr,x+gridSizeX*qx,y+gridSizeY*qy,{width:qrSize})
-            pdf.text(label || codeFormatter(code),x+gridSizeX*lx,y+gridSizeY*ly)
-        }    
+            pdf.text(label || id,x+gridSizeX*lx,y+gridSizeY*ly)
+        }
     }
     pdf.text(`Created At: ${dayjs().format('MM/DD/YYYY HH:mm:ss')}`,pw/2 - 10,ph - mb + 2);
     pdf.end();
+    fs.writeFileSync(filePath+'.csv',"Barcodes\n"+barcodes.join('\n'))
 }
 
 
@@ -182,7 +186,7 @@ ipcMain.handle('makePDF',async (e,para)=>{
         await makePDF(filePath,para)
         return {filePath}
     } else {
-        return {payload:'Canceled.'}
+        return {payload:'Cancel'}
     }
 })
 

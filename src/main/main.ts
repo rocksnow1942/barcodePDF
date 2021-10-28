@@ -17,7 +17,7 @@ import log from 'electron-log';
 // import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-import './create'
+import './create.ts'
 
 
 export default class AppUpdater {
@@ -110,12 +110,9 @@ const createWindow = async () => {
     event.preventDefault();
     shell.openExternal(url);
   });
-
-  mainWindow?.setMenuBarVisibility(false)
-
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-  new AppUpdater();
+  // new AppUpdater();
 };
 
 /**
