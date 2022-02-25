@@ -11,7 +11,7 @@ import { PaperSize,DEFAULT_CONFIG } from '../util/defaults';
 import { dialog } from 'electron';
 import dayjs from 'dayjs';
 
-PDFDocument.prototype.addSVG = function (svg, x, y, options) {
+PDFDocument.prototype.addSVG = function (svg:string , x:number, y:number, options:SVGtoPDF.SVGtoPDFOptions) {
     return SVGtoPDF(this, svg, x, y, options), this;
 };
 
