@@ -30,8 +30,7 @@ export default merge(baseConfig, {
   target: 'electron-main',
 
   entry: {
-    main: path.join(webpackPaths.srcMainPath, 'main.ts'),
-    preload: path.join(webpackPaths.srcMainPath, 'preload.js'),
+    main: path.join(webpackPaths.srcMainPath, 'main.ts')    
   },
 
   output: {

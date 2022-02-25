@@ -66,22 +66,32 @@ export const fonts = [
 'ZapfDingbats',
 ]
 
-const getTxtSetting = (offset:number)=>({
-    fontSize: 12,
+const getTxtSetting = (index:number)=>({
+    fontSize: 17,
     font: 'Helvetica-Bold',
-    x: 2,
-    y: offset>2?-1:0.5 + offset*0.6,
+    width:2.125,
+    align:'center',
+    x: 0,
+    y: index>2?-1:2.2 + index*0.4,
+
 })
 
 const getBadgeSetting = ()=>({
     desc:'Default',
-    width:3.37,
-    height:2.125,
-    marginX: 0.1,
-    marginY: 0.1,
-    cWidth: 0.75,
-    cX: 0.5,
-    cY: 0.5,
+    // paper settings
+    paperSize:'LETTER',
+    top:0,
+    left:0,
+    width: 0,
+    height:0,
+    // pannel settings
+    pWidth:2.125,
+    pHeight:3.37,   
+    marginX: 0,
+    marginY: 0,
+    cWidth: 1.5,
+    cX: 0.3125,
+    cY: 0.3125,
     cType:'qrcode',
     txt:Array.from({length:5},(_,i)=>getTxtSetting(i)),
 })

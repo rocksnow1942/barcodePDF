@@ -5,7 +5,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Button from '@mui/material/Button';
-import {useState } from 'react';
+import {useState , useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
@@ -14,31 +14,69 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import IconButton from '@mui/material/IconButton'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import ToolTip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
 // Components
 import BarcodeGrid from '../components/BarcodeGrid';
 import UserHelp from '../components/Help';
 import BadgeGrid from '../components/BadgeGrid';
 import { ipcRenderer,shell } from 'electron';
 
-const Main = () => {   
-  const [showHelp, setShowHelp] = useState(false)
-  const [tab,setTab] = useState('grid')
-  const handleTabSelect = (tab) => ()=>setTab(tab)
-  const handleGetSettings = ()=>{
-    ipcRenderer.invoke('getConfig','file')
-    .then(file => {
-      shell.showItemInFolder(file)
+
+const getConfig = (dispatch)=>()=>{
+  ipcRenderer.invoke('getConfig')
+    .then(config => {
+        dispatch(config)
     })
     .catch(err => {
       alert(`Error getting settings file: ${err}`)
     })
+}
+
+const persistConfig = dispatch =>(para)=>{
+  ipcRenderer.invoke('setConfig',para)
+    .then((res)=>{
+      dispatch && dispatch(res)
+    })
+    .catch(err => {
+     alert(`setConfig Error: ${err}`)
+    })
+}
+
+const Main = () => {   
+  const [showHelp, setShowHelp] = useState(false)
+  const [tab,setTab] = useState('badge')
+  const handleTabSelect = (tab) => ()=>setTab(tab)
+  const [config,setConfig] = useState(null)
+  
+  // get config first
+  useEffect(() => {    
+    getConfig(setConfig)()
+  },[])
+
+  // persist config
+  const saveConfig = (dispatch) => ()=>{
+    persistConfig(dispatch)(config)
+  }
+
+
+  
+  const showSettingsFile = ()=>{
+    if (config && config.file) {
+      shell.showItemInFolder(config.file)
+    }    
+  }
+
+  if (!config) {
+    return <Box sx={{display:'flex',height:'90vh',alignItems:'center',justifyContent:'center'}}>
+      <CircularProgress size={82}/>
+    </Box>
   }
 
   return (
     <Box sx={{m:'1em'}}>
       <Box sx={{p:'0em 1em 1em', display:'flex',alignItems:'center',justifyContent:'space-between'}} >
       <Box sx={{display:'flex',alignItems:'center'}} >
-      <Typography sx={{mr:'2em'}}><b>BaBaCoder</b></Typography> 
+      <Typography sx={{mr:'2em'}}><b>Badger</b></Typography> 
       <ButtonGroup>
         <Button size='small' variant={tab==='grid'?'contained':'outlined'} onClick={handleTabSelect('grid')}>Grid</Button>
         <Button size='small' variant={tab==='badge'?'contained':'outlined'} onClick={handleTabSelect('badge')}>Badge</Button>        
@@ -51,7 +89,7 @@ const Main = () => {
         <HelpOutlineOutlinedIcon/>} 
       </ToolTip>
         </IconButton>
-<IconButton color='primary' onClick={handleGetSettings}>
+<IconButton color='primary' onClick={showSettingsFile}>
   <ToolTip title="Show Settings File">
     <SettingsIcon /> 
     </ToolTip>
@@ -62,8 +100,8 @@ const Main = () => {
         showHelp &&  <Box sx={{m:'0.5em'}}><UserHelp tab={tab}/></Box>
       }
     
-      {tab==='grid' && <BarcodeGrid/>}
-      {tab==='badge' && <BadgeGrid/>}
+      {tab==='grid' && <BarcodeGrid config={config} setConfig={setConfig} saveConfig={saveConfig}/>}
+      {tab==='badge' && <BadgeGrid config={config} setConfig={setConfig} saveConfig={saveConfig}/>}
     </Box>
   );
 };

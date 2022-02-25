@@ -23,7 +23,14 @@ const Link = ({children}) => {
               <Typography variant='subtitle2'>&diams; QRCode position is relative position to each grid. Size is relative to the smaller dimension of each grid. Value should be 0-1.</Typography>
               <Typography variant='subtitle2'>&diams; Label X and Y position is similar to QRCode position.</Typography>      
               <Typography variant='subtitle2'>&diams; Supported Label Font: <Link>https://pdfkit.org/docs/text.html#fonts</Link></Typography>        
-              </>          
+              </>      
+          case 'badge':
+            return <>
+            <Typography variant='subtitle2'>All dimension units are in inches.</Typography>
+            <Typography variant='subtitle2'>Load a csv file with header: code, T1, T2, T3, T4, T5</Typography>
+            <Typography variant='subtitle2'>T1, T2, T3, T4, T5 are text that will be placed at each Text positions.</Typography>
+            <Typography variant='subtitle2'>For text, if the label position top or left is &lt;0, the the text is not placed.</Typography>
+            </>    
         default:
             return <Typography>
               Help Page is not available at this time.
