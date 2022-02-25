@@ -1,10 +1,12 @@
-import { ipcMain } from 'electron';
+import { ipcMain,app } from 'electron';
 import electron from 'electron'
 import path from 'path'
 import {codeFormatter} from '../util/func'
-const PDFDocument = require('./pdfkit.standalone');
-import DATAMatrix from './datamatrix';
-const SVGtoPDF = require('svg-to-pdfkit');
+// const PDFDocument = require('./pdfkit.standalone');
+import PDFDocument from '../util/pdfkit.standalone'
+import DATAMatrix from '../util/datamatrix';
+// const SVGtoPDF = require('svg-to-pdfkit');
+import SVGtoPDF from 'svg-to-pdfkit';
 import fs from 'fs';
 import qrcode from 'qrcode';
 
@@ -16,7 +18,7 @@ PDFDocument.prototype.addSVG = function (svg, x, y, options) {
 };
 
 const DEFAULT = {
-    code: 'YYMMDD-****-[001]',
+    grid : {code: 'YYMMDD-****-[001]',
     mt: 15,
     mr: 15,
     ml: 15,
@@ -32,15 +34,20 @@ const DEFAULT = {
     font: 'Helvetica',
     label: '730-00008 RevA',
     paperSize:'A4',
-    type:'qrcode'
+    type:'qrcode'},
+    badge: [
+        {
+            slot:'Custom Style 1',
+        },        
+    ]
 }
 
 function getConfigFromFile (file){
     try {
         const data =  JSON.parse(fs.readFileSync(file,'utf-8'))        
-        return {...data}
+        return {...data,file}
     } catch (error) {
-        return DEFAULT
+        return {...DEFAULT,file}
     }
 }
 
@@ -49,16 +56,16 @@ class Config {
     
     constructor() {
         const userPath = electron.app.getPath('userData')        
-        this.path = path.join(userPath,'pdf-gen-settings.json')
+        this.path = path.join(userPath,`BabaCoderSettings-${app.getVersion()}.json`)
         console.log('*** config path ***',this.path)
         this.data = getConfigFromFile(this.path)
     }
-    get(){
-        return this.data
+    get(key){
+        return this.data[key]
     }
-    set(data){       
-        this.data = data 
-        fs.writeFileSync(this.path,JSON.stringify(data,null,2))
+    set(key,data){       
+        this.data[key] = data 
+        fs.writeFileSync(this.path,JSON.stringify(this.data,null,2))
     }    
 }
   
@@ -202,12 +209,11 @@ ipcMain.handle('makePDF',async (e,para)=>{
     }
 })
 
-ipcMain.handle('setConfig', async (e,data)=>{
-    
-    config.set(data)
-    return {payload:config.data}
+ipcMain.handle('setConfig', async (e,key,data)=>{    
+    config.set(key,data)
+    return null
 })
 
-ipcMain.handle('getConfig', async ()=>{
-    return config.get()
+ipcMain.handle('getConfig', async (e,key:string)=>{
+    return config.get(key)
 })

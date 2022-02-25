@@ -17,7 +17,7 @@ import log from 'electron-log';
 // import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-import './create.ts'
+import '../handlers/handler.ts'
 
 
 export default class AppUpdater {

@@ -1,7 +1,7 @@
 {
     "name": "qrcode-generator",
     "productName": "BaBaCoder",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "For making qrcodes",
     "main": "./dist/main/main.js",
     "author": {
