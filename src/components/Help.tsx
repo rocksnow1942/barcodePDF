@@ -35,9 +35,9 @@ const Link = ({children}) => {
             <Box sx={{pl:3,'& h6':{mt:'0.3em',lineHeight:'1.25em'}}}>
             <Typography variant='subtitle2' sx={{ml:'1em'}}><b>&diams; How To Use</b> </Typography>
             <Typography variant='subtitle2'>Adjust the configuration or select a saved configuration preset. Click "Background Image" to load background Image. Click "Generate Badge" to generate pdf from csv file. PDF file is saved to the same location as the csv file.</Typography>
-            <Typography variant='subtitle2'><b>csv File format:</b> First row must be headers. Valid headers: <b>code, T1, T2, T3, T4, T5</b>. All headers are case in-sensitive and optional. </Typography>
+            <Typography variant='subtitle2'><b>csv File format:</b> First row must be headers. Valid headers: <b>code, T1, T2, T3,...</b>. All headers are case in-sensitive and optional. </Typography>
               <Typography variant='subtitle2'><b>code:</b> If provided, text in this column is used for generating the 2D code.</Typography>
-              <Typography variant='subtitle2'><b>T1,T2,T3,T4,T5:</b> If provided, each text column is placed on the badge according to respective text settings.</Typography>
+              <Typography variant='subtitle2'><b>T1,T2,T3,...:</b> If provided, each text column is placed on the badge according to respective text settings.</Typography>
 
             <Typography variant='subtitle2' sx={{ml:'1em',pt:'0.5em'}}><b>&diams; Configuration Guide</b> </Typography>
             <Typography variant='subtitle2' ><b>Presets:</b> 10 save slots available. Use "Description" to add a note. Click "Save Settings" to save parameters.</Typography>            
@@ -52,8 +52,9 @@ const Link = ({children}) => {
               The image is fit to the badge panel while maintaining its aspect ratio. It works the best if the image has the same aspect ratio as your badge panel (Badge Width x Badge Height).
               </Typography>
 
-              <Typography variant='subtitle2'><b>Text Box Settings:</b> Up to 5 text fields can be provided in the input file and placed on the badge. 
-              Each text field has its position and text format settings. If any of the <b>Position Settings is set to &lt; 0</b>, then this text field is ignored.</Typography>
+              <Typography variant='subtitle2'><b>Text Box Settings:</b> Text fields can be provided in the input file and placed on the badge. 
+              Each text field has its position and text format settings. If any of the <b>Position Settings is set to &lt; 0</b>, then this text field is ignored. Click + / - to add / remove textbox..
+              </Typography>
 
               <Typography variant='subtitle2'><b>Use External Fonts:</b> Some common fonts are provided. Also support external fonts in .ttf or .otf formats. Click 'Import Fonts'
               then copy font files to the fonts folder. Restart app to use the added fonts.

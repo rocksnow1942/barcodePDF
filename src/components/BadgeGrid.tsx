@@ -10,6 +10,9 @@ import Selection from './Selection';
 import Box from '@mui/material/Box';
 import { PaperSize } from '../util/defaults';
 import path from 'path'
+import ButtonGroup from '@mui/material/ButtonGroup';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 const PaperSizeOptions = Object.keys(PaperSize).map((key) => ({
   value:key,
@@ -163,6 +166,16 @@ export default function BadgeGrid ({
     })
   }
 
+  const handleAddTxt = (mode)=>(e) => {    
+    setPara(p=>{
+      if (mode==='add') {
+        return {...p,txt:[...p.txt,p.txt[p.txt.length-1]]}
+      } else {
+        return {...p,txt:[...p.txt.slice(0,p.txt.length-1)]}
+      }      
+    })
+  }
+
   const handleSelectBackground = () =>{
     ipcRenderer.invoke('choose-file',[{ name: 'Image file', extensions: ['jpeg','png'] }])
     .then(res => {
@@ -256,19 +269,38 @@ export default function BadgeGrid ({
             </Box>)
         }   
 
-        <Grid container spacing={1} sx={{mt:'1em',textAlign:'center'}}>
-        <Grid item xs={6}>
+        <Box  sx={{mt:'1em',textAlign:'center', display:'flex',justifyContent:'space-evenly'}}>
+        <Box >
             <Button size='small' variant='contained' disabled={loading}
             onClick={makePDF}>Generate Badge
             {loading && <CircularProgressWithLabel size={38} value={progress * 100}/>}
             </Button>
-          </Grid>
-          <Grid item xs={6}>
+          </Box>
+          <ButtonGroup>
+            <Button
+              size="small"              
+              
+              onClick={handleAddTxt('add')}
+              
+            >
+              <AddIcon/>
+            </Button>
+          
+            <Button
+              size="small"
+                            
+              onClick={handleAddTxt('remove')}
+            >
+              <RemoveIcon/>
+            </Button>
+          </ButtonGroup>
+
+          <Box >
             <Button size='small' variant='contained'
             color={needSave?'primary':'inherit'}
             onClick={saveConfig(()=>setNeedSave(false))}>Save Settings</Button>
-          </Grid>
-          </Grid>          
+          </Box>
+          </Box>          
           {error && <Box sx={{textAlign:'center',mt:1}}><Typography sx={{color:'red'}}>{error}</Typography></Box>}
           </Box>
   }

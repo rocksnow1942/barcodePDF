@@ -104,7 +104,7 @@ const getBadgeSetting = ()=>({
     cX: 0.3125,
     cY: 0.3125,
     cType:'qrcode',
-    txt:Array.from({length:5},(_,i)=>getTxtSetting(i)),
+    txt:Array.from({length:3},(_,i)=>getTxtSetting(i)),
 })
 
 export const DEFAULT_CONFIG = {
