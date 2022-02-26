@@ -1,5 +1,5 @@
 {
-  "name": "barcode-gen",
+  "name": "badger",
   "productName": "Badger",
   "description": "Generate Barcode for print on a PDF",
   "scripts": {
@@ -31,7 +31,7 @@
   },
   "build": {
     "productName": "Badger",
-    "appId": "hui.Barcode.Generator",
+    "appId": "hui.Badger",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
