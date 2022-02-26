@@ -117,11 +117,11 @@ export default function BadgeGrid ({
   const makePDF = () => {
     setError('')
     setLoading(true)
+    setProgress(0)
     ipcRenderer.invoke('makeBadge',{...badgePara,backgroundImg})
     .then(res => {
       if (res.filePath){        
-        shell.showItemInFolder(res.filePath)
-        setProgress(0)
+        shell.showItemInFolder(res.filePath)        
         setError(`Saved barcode file to ${res.filePath}`)
       } else if (res.payload ==='Cancel') {
         setError('User Cancelled')
