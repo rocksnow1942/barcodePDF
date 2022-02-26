@@ -2,7 +2,7 @@ import { ipcMain,app } from 'electron';
 import electron from 'electron'
 import path from 'path'
 import fs from 'fs';
-import { DEFAULT_CONFIG } from '../util/defaults';
+import { DEFAULT_CONFIG, fontPath,fonts } from '../util/defaults';
 import { dialog } from 'electron';
 import dayjs from 'dayjs';
 import {parseCsv} from '../util/csvParser'
@@ -67,8 +67,15 @@ ipcMain.handle('makeBadge',async (e,para)=>{
     })        
     if (filePaths.length > 0) {
         const filePath = filePaths[0]
-        const rows = (await parseCsv(filePath)).filter(row=>row.code && row.code.trim().length>0)
-        await makePDFBadge(rows,para,filePath+'.pdf')        
+        const rows = (await parseCsv(filePath)).filter(row=>row && Object.values(row).some(Boolean))
+        let currentProgress = 0
+        await makePDFBadge(rows,para,filePath+'.pdf',(progress)=>{
+            if (progress - currentProgress > 0.01) {
+                currentProgress = progress
+                e.sender.send('makeBadgeProgress',progress)
+            }
+            
+        })
         return {filePath:filePath+'.pdf'}
     } else {
         return {payload:'Cancel'}
@@ -96,5 +103,5 @@ ipcMain.handle('setConfig', async (e,data)=>{
 })
 
 ipcMain.handle('getConfig', async (e)=>{
-    return config.get()
+    return {config:config.get(),fontPath,fonts}
 })

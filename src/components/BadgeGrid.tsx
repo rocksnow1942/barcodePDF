@@ -3,12 +3,12 @@ import { ipcRenderer,shell } from 'electron';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Selection from './Selection';
 import Box from '@mui/material/Box';
-import { PaperSize, fonts} from '../util/defaults';
+import { PaperSize } from '../util/defaults';
 import path from 'path'
 
 const PaperSizeOptions = Object.keys(PaperSize).map((key) => ({
@@ -43,7 +43,7 @@ const EditConfig = ({config,handleChange,para,gridSize})=> <Grid item xs={gridSi
 </Grid>
 
 
-const TxtConfig = ({cfg,handleChange,index}) =>{
+const TxtConfig = ({cfg,handleChange,index,fonts}) =>{
   const configs = [
     {name:'fontSize',label:'Font Size'},
     {name:'font',label:'Font',options:fonts},
@@ -67,9 +67,32 @@ const TxtConfig = ({cfg,handleChange,index}) =>{
   </Grid>
 }
 
+function CircularProgressWithLabel(props) {
+  return (
+    <Box sx={{ position: 'absolute', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" {...props} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.primary" sx={{fontSize:14}}>
+          {`${Math.round(props.value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
 
 export default function BadgeGrid ({
-  config,setConfig,saveConfig
+  config,setConfig,saveConfig,fonts
 }) {
 
   const badgePresets = config.badge
@@ -79,7 +102,8 @@ export default function BadgeGrid ({
   const [error,setError] = useState('')
   const [loading,setLoading] = useState(false)  
   const [needSave,setNeedSave] = useState(false)
-  const [backgroundImg,setBackgroundImg] = useState('')  
+  const [backgroundImg,setBackgroundImg] = useState('')
+  const [progress,setProgress] = useState(0)
   const badgePara = badgePresets[slot]
 
   const setPara = (dispatch)=>{
@@ -97,6 +121,7 @@ export default function BadgeGrid ({
     .then(res => {
       if (res.filePath){        
         shell.showItemInFolder(res.filePath)
+        setProgress(0)
         setError(`Saved barcode file to ${res.filePath}`)
       } else if (res.payload ==='Cancel') {
         setError('User Cancelled')
@@ -108,6 +133,12 @@ export default function BadgeGrid ({
       setError(`Make PDF error: ${err}`)
     })
   }
+
+  useEffect(()=>{
+    ipcRenderer.on('makeBadgeProgress',(e,progress)=>{
+      setProgress(progress)
+    })
+  },[])
  
 
   const handleChange = (e) => {    
@@ -143,7 +174,8 @@ export default function BadgeGrid ({
   }
 
     
-    return <><Grid container spacing={1}>
+    return <Box sx={{mb:'3em'}}>
+      <Grid container spacing={1}>
       <Grid item xs={3}>      
       <Selection
         label='Select Preset'
@@ -220,7 +252,7 @@ export default function BadgeGrid ({
               <Typography sx={{width:'4em'}}>
                 Text {idx+1}
               </Typography>
-              <TxtConfig cfg={txtCfg} handleChange={handleTxtChange} index={idx} />
+              <TxtConfig cfg={txtCfg} handleChange={handleTxtChange} index={idx} fonts={fonts} />
             </Box>)
         }   
 
@@ -228,7 +260,7 @@ export default function BadgeGrid ({
         <Grid item xs={6}>
             <Button sx={{}} variant='contained' disabled={loading}
             onClick={makePDF}>Generate Badge
-            {loading && <CircularProgress size={24} sx={{position:'absolute'}}/>}
+            {loading && <CircularProgressWithLabel size={38} value={progress * 100}/>}
             </Button>
           </Grid>
           <Grid item xs={6}>
@@ -238,5 +270,5 @@ export default function BadgeGrid ({
           </Grid>
           </Grid>          
           {error && <Typography sx={{color:'red'}}>{error}</Typography>}
-          </>
+          </Box>
   }

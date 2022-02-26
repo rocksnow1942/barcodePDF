@@ -11,7 +11,7 @@ import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SettingsIcon from '@mui/icons-material/Settings';
 import IconButton from '@mui/material/IconButton';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import ToolTip from '@mui/material/Tooltip';
 import CircularProgress from '@mui/material/CircularProgress';
 // Components
@@ -69,10 +69,14 @@ const Main = () => {
   const [tab, setTab] = useState('badge');
   const handleTabSelect = (tab) => () => setTab(tab);
   const [config, setConfig] = useState(null);
+  const [mainProps,setMainProps] = useState({})
 
   // get config first
   useEffect(() => {
-    getConfig(setConfig)();
+    getConfig(({config,fontPath,fonts})=>{
+      setConfig(config);
+      setMainProps({fontPath,fonts})
+    })();
   }, []);
 
   // persist config
@@ -135,7 +139,7 @@ const Main = () => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton color="primary" onClick={() => setShowHelp(!showHelp)}>
             <ToolTip title={showHelp ? 'Hide Help' : 'Show Help'}>
-              {showHelp ? <CancelOutlinedIcon /> : <HelpOutlineOutlinedIcon />}
+              {showHelp ? <CloseIcon /> : <HelpOutlineOutlinedIcon />}
             </ToolTip>
           </IconButton>
           <IconButton color="primary" onClick={showSettingsFile}>
@@ -146,10 +150,10 @@ const Main = () => {
           <IconButton
             color="primary"
             onClick={() => {
-              shell.openPath(path.join(process.resourcesPath, 'assets/fonts'));
+              shell.openPath(mainProps.fontPath);
             }}
           >
-            <ToolTip title="Show Fonts Folder">
+            <ToolTip title="Import Fonts">
               <FontDownloadOutlinedIcon />
             </ToolTip>
           </IconButton>
@@ -173,6 +177,7 @@ const Main = () => {
           config={config}
           setConfig={setConfig}
           saveConfig={saveConfig}
+          fonts={mainProps.fonts}
         />
       )}
     </Box>

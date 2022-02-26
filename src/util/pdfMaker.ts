@@ -5,7 +5,7 @@ import PDFDocument from './pdfkit.standalone'
 import DATAMatrix from './datamatrix';
 import SVGtoPDF from 'svg-to-pdfkit';
 import {codeFormatter} from './func'
-import {PaperSize} from './defaults'
+import {PaperSize,fontPath} from './defaults'
 import path from 'path'
 
 PDFDocument.prototype.addSVG = function (svg, x, y, options) {
@@ -83,7 +83,7 @@ export async function makePDFGrid(filePath,para) {
 
 
 
-export async function makePDFBadge (gridData,config,outputPath) {
+export async function makePDFBadge (gridData,config,outputPath,onProgress) {
     const PPI = 72 // all values in config are in inches. this is PS pixels per inch
     Object.keys(config).forEach(key => {
         if (typeof config[key] ==='number') {
@@ -115,7 +115,13 @@ export async function makePDFBadge (gridData,config,outputPath) {
     }     
 
 
-    for (let gData of gridData) {
+    for (let index = 0; index < gridData.length; index++) {
+        const gData = gridData[index]
+        // progress callback
+        if (onProgress) {
+            onProgress((index + 1) / gridData.length)
+        }
+
         // draw background image
         if (backgroundImageBase64) {
             pdf.image(backgroundImageBase64,drawX , drawY ,{fit:[pWidth,pHeight],align:'center',valign:'center'});
@@ -126,13 +132,17 @@ export async function makePDFBadge (gridData,config,outputPath) {
             .stroke()
 
         // draw qr code:
-        if (cType === 'qrcode'){            
-            const qr = await qrcode.toDataURL(gData.code,{margin:0,scale:12});            
-            pdf.image(qr,drawX + cX, drawY + cY ,{width:cWidth})
-        } else if (cType === 'datamatrix'){ 
-            const svgText = DATAMatrix({msg:gData.code,dim:cWidth,pad:0,rct:0})
-            pdf.addSVG(svgText,drawX + cX,drawY + cY,{assumePt:true})
+        const code = (gData.code || '').trim()
+        if (code) {
+            if (cType === 'qrcode'){            
+                const qr = await qrcode.toDataURL(code,{margin:0,scale:12});            
+                pdf.image(qr,drawX + cX, drawY + cY ,{width:cWidth})
+            } else if (cType === 'datamatrix'){ 
+                const svgText = DATAMatrix({msg:code,dim:cWidth,pad:0,rct:0})
+                pdf.addSVG(svgText,drawX + cX,drawY + cY,{assumePt:true})
+            }
         }
+        
 
         // draw text:
         txt.forEach((cfg,idx)=>{
@@ -141,7 +151,8 @@ export async function makePDFBadge (gridData,config,outputPath) {
             if (x>=0 && y>=0 && text) {
                 let fontToUse = font
                 if (font.endsWith('.ttf') || font.endsWith('.otf')) {
-                    fontToUse = path.join(process.resourcesPath,`assets/fonts/${font}`) //'./fonts/BodoniFLF.ttf'
+                    // fontToUse = path.join(process.resourcesPath,`assets/fonts/${font}`) //'./fonts/BodoniFLF.ttf'
+                    fontToUse = path.join(fontPath,font) //'./fonts/BodoniFLF.ttf'
                 }
                 pdf.font(fontToUse)
                    .fontSize(fontSize)
@@ -159,7 +170,7 @@ export async function makePDFBadge (gridData,config,outputPath) {
             drawY += pHeight + marginY
         }
         if (drawY + pHeight > paperSize.h) {
-            if (gridData.indexOf(gData) !== gridData.length-1) {
+            if (index !== gridData.length-1) {
                 pdf.addPage(paperConfig)
                 drawY = top
             }            

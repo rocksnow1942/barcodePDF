@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-
+import { app } from 'electron';
 export const PaperSize = {
 A0 : [2383.94 ,3370.39],
 A1 : [1683.78 ,2383.94],
@@ -51,11 +51,14 @@ LETTER    :[612.00  , 792.00],
 TABLOID   :[792.00  , 1224.00],
 FOLIO     :[612.00  , 936.00],
 }
+const RESOURCES_PATH = app?.isPackaged
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets');
 
-const fontPath = path.join(process.resourcesPath,'assets/fonts')
+export const fontPath = path.join(RESOURCES_PATH,'fonts')
 let fontList = []
-if (fs.existsSync(fontPath)) {
-    fontList = fs.readdirSync(fontPath).filter(f=>f.endsWith('.ttf') || f.endsWith('.otf'))
+if (fs.existsSync(fontPath)) {    
+    fontList = fs.readdirSync(fontPath).filter(f=>f.endsWith('.ttf') || f.endsWith('.otf'))    
 }
 
 export const fonts = [
@@ -75,12 +78,12 @@ export const fonts = [
 ]
 
 const getTxtSetting = (index:number)=>({
-    fontSize: 17,
-    font: 'Helvetica-Bold',
-    width:2.125,
+    fontSize: [14,10,12][index] || 12,
+    font: ['LeagueSpartan-Bold.otf','Courier-Oblique','Courier'][index] || 'Helvetica',
+    width:1.925,
     align:'center',
-    x: 0,
-    y: index>2?-1:2.2 + index*0.4,
+    x: 0.1,
+    y: [2,2.55,2.85][index] || -1,
 
 })
 

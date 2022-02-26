@@ -1,6 +1,7 @@
 import { shell } from 'electron';
 import Typography from '@mui/material/Typography';
-
+import badgeDemo from '../images/badgedemo.png';
+import Box from '@mui/material/Box';
 
 const Link = ({children}) => {
     return <span onClick={()=>{shell.openExternal(children)}}
@@ -25,14 +26,40 @@ const Link = ({children}) => {
               <Typography variant='subtitle2'>&diams; Supported Label Font: <Link>https://pdfkit.org/docs/text.html#fonts</Link></Typography>        
               </>      
           case 'badge':
-            return <>
-            <Typography variant='subtitle2'>All dimension units are in inches.</Typography>
-            <Typography variant='subtitle2'>Load a csv file with header: code, T1, T2, T3, T4, T5</Typography>
-            <Typography variant='subtitle2'>T1, T2, T3, T4, T5 are text that will be placed at each Text positions.</Typography>
-            <Typography variant='subtitle2'>For text, if the label position top or left is &lt;0, the the text is not placed.</Typography>
-            <Typography variant='subtitle2'>Background image is fit to each badge panel.</Typography>
-            <Typography variant='subtitle2'>Place .ttf or .otf fonts under the fonts folder to use external fonts.</Typography>
-            </>    
+            return <Box sx={{display:'flex'}}>
+              <Box sx={{textAlign:'center'}}>
+              <Typography ><strong>Dimension definition</strong></Typography>
+              <img style={{maxWidth:300,width:'30vw',padding:'5px',border:'1px solid gray',borderRadius:'3px'}} src={badgeDemo}/>
+              <Typography variant='subtitle2'>Showing the top left corner of the badges printed on a paper (size LETTER).</Typography>
+              </Box>            
+            <Box sx={{p:2,ml:'2em','& h6':{m:'2px',textIndent:'-2em'}}}>
+            <Typography variant='subtitle2' sx={{textIndent:'-1em'}}><b>Presets:</b> 10 save slots available. Use "Description" to add a note. Click "Save Settings" to save parameters.</Typography>            
+            <Typography variant='subtitle2'><b>Dimension Units:</b> All dimension units are in inches.</Typography>
+            <Typography variant='subtitle2'><b>Paper Size:</b> Select "Custom Paper Size" to define your paper size. A list of paper size are provided.</Typography>
+            <Typography variant='subtitle2' sx={{textIndent:'-1em'}}><b>Layout Dimensions:</b> See left figure for the definition of each parameter. 
+              These values define the layout of each <b>badge panel</b> and the relative position of <b>badge panels</b> to the paper and to each other.
+              The <b>badge panels</b> are then layed out onto the paper from left to right, top to bottom.
+            </Typography>
+              
+            
+              <Typography variant='subtitle2'><b>Background Image:</b> A background image file in .jpeg or .png format can be added to each <b>badge panel</b>.
+              The image is fit to the badge panel while maintaining its aspect ratio. It works the best if the image has the same aspect ratio as your badge panel (Badge Width x Badge Height).
+              </Typography>
+
+              <Typography variant='subtitle2'><b>Text:</b> Up to 5 text fields can be provided in the input file and placed on the badge. 
+              Each text field has its position and text format settings. If any of the <b>Position Settings is set to &lt; 0</b>, then this text field is ignored.</Typography>
+
+              <Typography variant='subtitle2'><b>Text Font:</b> Some common fonts are provided. External fonts in .ttf or .otf formats are supported. Click 'Import Fonts'
+              then copy font files to the fonts folder. Restart app to use the added fonts.
+              </Typography>
+
+              <Typography variant='subtitle2'><b>Click GENERATE BADGE to load a csv file and generate badge pdf</b> </Typography>
+              <Typography variant='subtitle2'><b>CSV File format:</b> Headers: <b>Code, T1, T2, T3, T4, T5</b>. All fields are case in-sensitive and optional. </Typography>
+              <Typography variant='subtitle2'><b>Code:</b> If provided, text in this column is used for generate the 2D code.</Typography>
+              <Typography variant='subtitle2'><b>T1,T2,T3,T4,T5:</b> If provided, each text column is placed on the badge according to Text settings.</Typography>
+            <Typography variant='subtitle2'><b></b> </Typography>
+            </Box>
+            </Box>    
         default:
             return <Typography>
               Help Page is not available at this time.
