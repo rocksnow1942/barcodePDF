@@ -83,8 +83,7 @@ const Main = () => {
   
   const showSettingsFile = ()=>{
     
-    if (config && config.file) {
-      console.log(config.file)
+    if (config && config.file) {      
       shell.showItemInFolder(config.file)      
     }    
   }
