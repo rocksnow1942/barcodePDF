@@ -112,7 +112,7 @@ export default function BarcodeGrid ({
           <Grid item xs={4}>
             <Button sx={{}} variant='contained' disabled={loading}
             color={needSave?'primary':'inherit'}
-            onClick={saveConfig(()=>setNeedSave(false))}>Save Settigns
+            onClick={saveConfig(()=>setNeedSave(false))}>Save Settings
             {loading && <CircularProgress size={24} sx={{position:'absolute'}}/>}
             </Button>
           </Grid>

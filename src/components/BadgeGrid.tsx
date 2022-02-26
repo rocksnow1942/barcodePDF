@@ -174,7 +174,7 @@ export default function BadgeGrid ({
   }
 
     
-    return <Box sx={{mb:'3em'}}>
+    return <Box sx={{mb:'1em'}}>
       <Grid container spacing={1}>
       <Grid item xs={3}>      
       <Selection
@@ -235,7 +235,7 @@ export default function BadgeGrid ({
           }
 
         <Grid item xs={3}>
-        <Button sx={{textTransform:'none'}} variant='contained' size='small' fullWidth
+        <Button sx={{textTransform:'none', maxWidth:'180px'}} variant='contained' size='small' fullWidth
             onClick={handleSelectBackground}>
               Background Image
               </Button>
@@ -249,8 +249,8 @@ export default function BadgeGrid ({
 
         {
             badgePara.txt.map((txtCfg,idx)=><Box key={idx} sx={{m:1,display:'flex',justifyContent:'space-around',alignItems:'center',width:'100%'}}>
-              <Typography sx={{width:'4em'}}>
-                Text {idx+1}
+              <Typography sx={{width:'2em'}}>
+                T{idx+1}
               </Typography>
               <TxtConfig cfg={txtCfg} handleChange={handleTxtChange} index={idx} fonts={fonts} />
             </Box>)
@@ -258,17 +258,17 @@ export default function BadgeGrid ({
 
         <Grid container spacing={1} sx={{mt:'1em',textAlign:'center'}}>
         <Grid item xs={6}>
-            <Button sx={{}} variant='contained' disabled={loading}
+            <Button size='small' variant='contained' disabled={loading}
             onClick={makePDF}>Generate Badge
             {loading && <CircularProgressWithLabel size={38} value={progress * 100}/>}
             </Button>
           </Grid>
           <Grid item xs={6}>
-            <Button sx={{}} variant='contained'
+            <Button size='small' variant='contained'
             color={needSave?'primary':'inherit'}
-            onClick={saveConfig(()=>setNeedSave(false))}>Save Settigns</Button>
+            onClick={saveConfig(()=>setNeedSave(false))}>Save Settings</Button>
           </Grid>
           </Grid>          
-          {error && <Typography sx={{color:'red'}}>{error}</Typography>}
+          {error && <Box sx={{textAlign:'center',mt:1}}><Typography sx={{color:'red'}}>{error}</Typography></Box>}
           </Box>
   }

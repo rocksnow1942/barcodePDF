@@ -22,7 +22,6 @@ import { ipcRenderer, shell } from 'electron';
 import { ThemeProvider } from '@mui/material/styles';
 import { createTheme } from '@mui/material/styles';
 import FontDownloadOutlinedIcon from '@mui/icons-material/FontDownloadOutlined';
-import path from 'path';
 
 const theme = createTheme({
   spacing: 8,
@@ -116,20 +115,22 @@ const Main = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ mr: '2em' }}>
-            <b>Badger</b>
+          <Typography variant='h6' sx={{ mr: '1em' }}>
+            Badger
           </Typography>
           <ButtonGroup>
             <Button
-              size="small"
-              variant={tab === 'grid' ? 'contained' : 'outlined'}
+              size="small"              
+              variant="text"
               onClick={handleTabSelect('grid')}
+              color={tab === 'grid' ? 'primary' : 'inherit'}
             >
               Grid
             </Button>
             <Button
               size="small"
-              variant={tab === 'badge' ? 'contained' : 'outlined'}
+              variant="text"              
+              color={tab === 'badge' ? 'primary' : 'inherit'}
               onClick={handleTabSelect('badge')}
             >
               Badge
