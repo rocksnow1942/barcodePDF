@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Selection from './Selection';
 import Box from '@mui/material/Box';
 import { PaperSize, fonts} from '../util/defaults';
+import path from 'path'
 
 const PaperSizeOptions = Object.keys(PaperSize).map((key) => ({
   value:key,
@@ -19,7 +20,7 @@ PaperSizeOptions.push({
   label:'Custom Paper Size'
 })
 
-const EditConfig = ({config,handleChange,para,gridSize})=> <Grid item xs={gridSize||4}>
+const EditConfig = ({config,handleChange,para,gridSize})=> <Grid item xs={gridSize||3}>
 {
   config.options ? 
   <Selection
@@ -78,7 +79,7 @@ export default function BadgeGrid ({
   const [error,setError] = useState('')
   const [loading,setLoading] = useState(false)  
   const [needSave,setNeedSave] = useState(false)
-
+  const [backgroundImg,setBackgroundImg] = useState('')  
   const badgePara = badgePresets[slot]
 
   const setPara = (dispatch)=>{
@@ -92,7 +93,7 @@ export default function BadgeGrid ({
   const makePDF = () => {
     setError('')
     setLoading(true)
-    ipcRenderer.invoke('makeBadge',badgePara)
+    ipcRenderer.invoke('makeBadge',{...badgePara,backgroundImg})
     .then(res => {
       if (res.filePath){        
         shell.showItemInFolder(res.filePath)
@@ -118,8 +119,7 @@ export default function BadgeGrid ({
   }
   
   const handleTxtChange = (e) => {
-    let value = e.target.value
-    console.log('text',value,e.target.type)
+    let value = e.target.value    
     if (e.target.type === 'number'){
       value = parseFloat(value)
     }
@@ -132,9 +132,19 @@ export default function BadgeGrid ({
     })
   }
 
+  const handleSelectBackground = () =>{
+    ipcRenderer.invoke('choose-file',[{ name: 'Image file', extensions: ['jpeg','png'] }])
+    .then(res => {
+      setBackgroundImg(res)
+    })
+    .catch(err => {
+      setError(`Choose Background Image error: ${err}`)
+    })
+  }
+
     
     return <><Grid container spacing={1}>
-      <Grid item xs={4}>      
+      <Grid item xs={3}>      
       <Selection
         label='Select Preset'
         value={slot}
@@ -152,12 +162,12 @@ export default function BadgeGrid ({
               {name:'paperSize',label:'Paper Size (W x H)',options:PaperSizeOptions},              
             ].map((i,idx)=><EditConfig key={idx} config={i} handleChange={handleChange} para={badgePara}/>)
           }
-
-          <Grid item xs={4}>
+        {
+          badgePara.paperSize === 'custom' && <>
+          <Grid item xs={3}>
           <TextField 
             label='Custom Paper Width'
-            type='number'
-            disabled={badgePara.paperSize !=='custom'}
+            type='number'            
             value={badgePara.width}
             onChange={handleChange}
             name='width'
@@ -165,11 +175,10 @@ export default function BadgeGrid ({
             fullWidth 
           />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
           <TextField 
             label='Custom Paper Height'
-            type='number'
-            disabled={badgePara.paperSize !=='custom'}
+            type='number'            
             value={badgePara.height}
             onChange={handleChange}
             name='height'
@@ -177,29 +186,44 @@ export default function BadgeGrid ({
             fullWidth 
           />
           </Grid>
-
-          {
-            [                            
+          </>
+        }          
+        {
+            [
               {name:'top',label:'Layout Top Margin'},
               {name:'left',label:'Layout Left Margin'},
               {name:'pWidth',label:'Badge Width'},
               {name:'pHeight',label:'Badge Height'},
               {name:'marginX',label:'Badge Spacing X'},
               {name:'marginY',label:'Badge Spacing Y'},
-              {name:'cWidth',label:'QR Code Width'},
+              {name:'cWidth',label:'2D Code Size'},
               {name:'cY',label:'2D Code Position Top'},
-              {name:'cX',label:'2D Code Position Left'},              
+              {name:'cX',label:'2D Code Position Left'},
             ].map((i,idx)=><EditConfig key={idx} config={i} handleChange={handleChange} para={badgePara}/>)
-          } 
-          {
+          }
+
+        <Grid item xs={3}>
+        <Button sx={{textTransform:'none'}} variant='contained' size='small' fullWidth
+            onClick={handleSelectBackground}>
+              Background Image
+              </Button>
+              <Typography variant='subtitle2'>
+                File: {path.basename(backgroundImg)}
+              </Typography>
+          </Grid>
+          
+
+        </Grid>
+
+        {
             badgePara.txt.map((txtCfg,idx)=><Box key={idx} sx={{m:1,display:'flex',justifyContent:'space-around',alignItems:'center',width:'100%'}}>
               <Typography sx={{width:'4em'}}>
                 Text {idx+1}
               </Typography>
               <TxtConfig cfg={txtCfg} handleChange={handleTxtChange} index={idx} />
             </Box>)
-          }
-        </Grid>      
+        }   
+
         <Grid container spacing={1} sx={{mt:'1em',textAlign:'center'}}>
         <Grid item xs={6}>
             <Button sx={{}} variant='contained' disabled={loading}

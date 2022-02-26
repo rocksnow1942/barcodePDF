@@ -44,9 +44,6 @@ const config  = new Config()
 
 
 
-
-
-
 ipcMain.handle('makePDF',async (e,para)=>{
     const { filePath } = await dialog.showSaveDialog({
         title: 'Export QR Code PDF',
@@ -78,6 +75,18 @@ ipcMain.handle('makeBadge',async (e,para)=>{
     }
 })
 
+ipcMain.handle('choose-file',async (e,filters)=>{
+    const {filePaths} = await dialog.showOpenDialog({
+        title: 'Select Image file',
+        filters: filters,
+    })        
+    if (filePaths.length > 0) {
+        const filePath = filePaths[0]        
+        return filePath
+    } else {
+        return ''
+    }
+})
 
 
 

@@ -6,7 +6,7 @@ import DATAMatrix from './datamatrix';
 import SVGtoPDF from 'svg-to-pdfkit';
 import {codeFormatter} from './func'
 import {PaperSize} from './defaults'
-    
+import path from 'path'
 
 PDFDocument.prototype.addSVG = function (svg, x, y, options) {
     return SVGtoPDF(this, svg, x, y, options), this;
@@ -103,14 +103,23 @@ export async function makePDFBadge (gridData,config,outputPath) {
 
     const pdf = new PDFDocument(paperConfig);
         
-    const {top,left,pWidth,pHeight,marginX,marginY,cWidth,cX,cY,cType,txt} = config
+    const {top,left,pWidth,pHeight,marginX,marginY,cWidth,cX,cY,cType,txt,backgroundImg} = config
     
     let drawX = left;
     let drawY = top;
     
+    let backgroundImageBase64=null;
+    if (backgroundImg) {
+        const type = backgroundImg.split('.').pop()
+        backgroundImageBase64 =`data:image/${type};base64,${fs.readFileSync(backgroundImg, 'base64')}`;
+    }     
 
 
-    for (let gData of gridData) {                
+    for (let gData of gridData) {
+        // draw background image
+        if (backgroundImageBase64) {
+            pdf.image(backgroundImageBase64,drawX , drawY ,{fit:[pWidth,pHeight],align:'center',valign:'center'});
+        }
         // draw grid:
         pdf.lineWidth(0.1)
         pdf.rect(drawX,drawY,pWidth,pHeight)
@@ -130,14 +139,17 @@ export async function makePDFBadge (gridData,config,outputPath) {
             const {x,y,fontSize,font,width,align} = cfg
             const text = gData[`t${idx+1}`]
             if (x>=0 && y>=0 && text) {
-                pdf.font(font)
+                let fontToUse = font
+                if (font.endsWith('.ttf') || font.endsWith('.otf')) {
+                    fontToUse = path.join(process.resourcesPath,`assets/fonts/${font}`) //'./fonts/BodoniFLF.ttf'
+                }
+                pdf.font(fontToUse)
                    .fontSize(fontSize)
                    .text(text,drawX + x*PPI,drawY + y*PPI,{
                         width:width*PPI,
                         align:align
                    })
             }
-
         })
 
         // move to next grid:

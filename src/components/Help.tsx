@@ -30,6 +30,8 @@ const Link = ({children}) => {
             <Typography variant='subtitle2'>Load a csv file with header: code, T1, T2, T3, T4, T5</Typography>
             <Typography variant='subtitle2'>T1, T2, T3, T4, T5 are text that will be placed at each Text positions.</Typography>
             <Typography variant='subtitle2'>For text, if the label position top or left is &lt;0, the the text is not placed.</Typography>
+            <Typography variant='subtitle2'>Background image is fit to each badge panel.</Typography>
+            <Typography variant='subtitle2'>Place .ttf or .otf fonts under the fonts folder to use external fonts.</Typography>
             </>    
         default:
             return <Typography>

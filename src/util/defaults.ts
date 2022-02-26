@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 export const PaperSize = {
 A0 : [2383.94 ,3370.39],
 A1 : [1683.78 ,2383.94],
@@ -49,6 +52,12 @@ TABLOID   :[792.00  , 1224.00],
 FOLIO     :[612.00  , 936.00],
 }
 
+const fontPath = path.join(process.resourcesPath,'assets/fonts')
+let fontList = []
+if (fs.existsSync(fontPath)) {
+    fontList = fs.readdirSync(fontPath).filter(f=>f.endsWith('.ttf') || f.endsWith('.otf'))
+}
+
 export const fonts = [
 'Courier',
 'Courier-Bold',
@@ -58,12 +67,11 @@ export const fonts = [
 'Helvetica-Bold',
 'Helvetica-Oblique',
 'Helvetica-BoldOblique',
-'Symbol',
 'Times-Roman',
 'Times-Bold',
 'Times-Italic',
 'Times-BoldItalic',
-'ZapfDingbats',
+...fontList,
 ]
 
 const getTxtSetting = (index:number)=>({
