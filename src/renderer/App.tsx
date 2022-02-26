@@ -1,5 +1,4 @@
 import { MemoryRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.css';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -20,6 +19,28 @@ import BarcodeGrid from '../components/BarcodeGrid';
 import UserHelp from '../components/Help';
 import BadgeGrid from '../components/BadgeGrid';
 import { ipcRenderer,shell } from 'electron';
+import { ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
+
+const theme = createTheme({    
+    spacing: 8,
+    components: {
+      MuiTextField: {
+        defaultProps: {
+          size:'small',
+          variant:'filled'
+        }
+      },
+      MuiFormControl: {
+        defaultProps: {
+          size:'small',
+          variant:'filled'
+        }
+      }
+
+    }
+})
+
 
 
 const getConfig = (dispatch)=>()=>{
@@ -61,8 +82,10 @@ const Main = () => {
 
   
   const showSettingsFile = ()=>{
+    
     if (config && config.file) {
-      shell.showItemInFolder(config.file)
+      console.log(config.file)
+      shell.showItemInFolder(config.file)      
     }    
   }
 
@@ -108,10 +131,12 @@ const Main = () => {
 
 export default function App() {
   return (
+    <ThemeProvider theme={theme}>
     <Router>
       <Switch>
         <Route path="/" component={Main} />
       </Switch>
     </Router>
+    </ThemeProvider>
   );
 }
