@@ -77,7 +77,7 @@ export const fonts = [
 ...fontList,
 ]
 
-const getTxtSetting = (index:number)=>({
+export const getTxtSetting = (index:number)=>({
     fontSize: [14,10,12][index] || 12,
     font: ['LeagueSpartan-Bold.otf','Courier-Oblique','Courier'][index] || 'Helvetica',
     width:1.925,

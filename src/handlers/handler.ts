@@ -15,19 +15,21 @@ interface Config {
     path:string,
     data: {
         [index:string]:any
-    },
+    },    
 }
 
 class Config {
     constructor() {
         const userPath = electron.app.getPath('userData')        
-        this.path = path.join(userPath,`BadgerSettings-${app.getVersion()}.json`)
-                
+        const version = app.getVersion() 
+        const name = app.getName()
+        this.path = path.join(userPath,`BadgerSettings-${version}.json`)
+        
         try {
             const data =  JSON.parse(fs.readFileSync(this.path,'utf-8'))
-            this.data = {...data,file:this.path}
+            this.data = {...data,file:this.path,version,name}
         } catch (error) {
-            this.data = {...DEFAULT_CONFIG,file:this.path}
+            this.data = {...DEFAULT_CONFIG,file:this.path,version,name}
             fs.writeFileSync(this.path,JSON.stringify(this.data,null,2))    
         }
     }

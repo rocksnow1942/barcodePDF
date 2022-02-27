@@ -8,7 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Selection from './Selection';
 import Box from '@mui/material/Box';
-import { PaperSize } from '../util/defaults';
+import { PaperSize,getTxtSetting } from '../util/defaults';
 import path from 'path'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import AddIcon from '@mui/icons-material/Add';
@@ -168,8 +168,8 @@ export default function BadgeGrid ({
 
   const handleAddTxt = (mode)=>(e) => {    
     setPara(p=>{
-      if (mode==='add') {
-        return {...p,txt:[...p.txt,p.txt[p.txt.length-1]]}
+      if (mode==='add') {        
+        return {...p,txt:[...p.txt,p.txt[p.txt.length-1] || getTxtSetting(0)]}
       } else {
         return {...p,txt:[...p.txt.slice(0,p.txt.length-1)]}
       }      

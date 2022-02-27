@@ -45,7 +45,7 @@ const getConfig = (dispatch) => () => {
   ipcRenderer
     .invoke('getConfig')
     .then((config) => {
-      dispatch(config);
+      dispatch(config);      
     })
     .catch((err) => {
       alert(`Error getting settings file: ${err}`);
@@ -74,6 +74,7 @@ const Main = () => {
   useEffect(() => {
     getConfig(({config,fontPath,fonts})=>{
       setConfig(config);
+      document.title = `${config.name} @ ${config.version}`;
       setMainProps({fontPath,fonts})
     })();
   }, []);

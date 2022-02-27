@@ -1,7 +1,7 @@
 {
     "name": "badger",
     "productName": "Badger",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "For making qrcodes",
     "main": "./dist/main/main.js",
     "author": {
